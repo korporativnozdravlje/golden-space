@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Space DOO - Premium Karte</title>
+    <title>Golden Space - Spider Pasijans</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap');
 
@@ -19,7 +19,6 @@
             margin: 0;
             padding: 0;
             background-color: var(--bg-dark);
-            background-image: none; 
             font-family: 'Montserrat', sans-serif;
             color: white;
             display: flex;
@@ -31,77 +30,99 @@
 
         header {
             text-align: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 15px;
+            margin-bottom: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .company-logo {
-            max-width: 250px;
+            max-width: 200px;
             height: auto;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             filter: drop-shadow(0px 4px 10px rgba(255, 215, 0, 0.4));
         }
 
-        .subtitle {
-            font-size: 0.8rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: var(--gold-solid);
-            margin-top: 5px;
-            font-weight: 600;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-
+        /* Tabla za igru */
         #game-board {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-wrap: nowrap;
+            gap: 5px;
             justify-content: center;
-            padding: 20px;
+            padding: 10px;
+            width: 95%;
             max-width: 1200px;
+            margin-top: 10px;
         }
 
-        .card {
-            width: 80px;
-            height: 120px;
-            background-color: var(--card-black);
-            border: 1px solid rgba(255, 215, 0, 0.4);
-            border-radius: 8px;
+        .column {
+            display: flex;
+            flex-direction: column;
+            width: 9%;
+            min-width: 70px;
+            min-height: 450px;
             position: relative;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.9), inset 0 0 10px rgba(255, 215, 0, 0.1);
+        }
+
+        /* Karte */
+        .card {
+            width: 100%;
+            aspect-ratio: 2.5 / 3.5;
+            background-color: var(--card-black);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 6px;
+            position: absolute;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.8);
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.1s, box-shadow 0.1s;
             user-select: none;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 4px;
+            box-sizing: border-box;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,1), 0 0 20px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.3);
-            border-color: var(--gold-solid);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            z-index: 10;
         }
 
-        .card-content {
-            position: absolute;
-            top: 5px;
-            left: 8px;
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            font-size: 1.2rem;
+        .card.selected {
+            border: 2px solid var(--gold-light);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            transform: translateY(-5px);
+            z-index: 20;
+        }
+
+        /* Sadržaj karte */
+        .card-top {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            font-size: 1rem;
+            line-height: 1;
             color: var(--gold-solid);
         }
 
-        .card-suit {
-            font-size: 1.3rem;
+        .card-suit-top {
+            font-size: 1.2rem;
             margin-top: 2px;
         }
 
+        .card-center-suit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            opacity: 0.15;
+        }
+
+        /* Zlatni gradijent za sve boje */
         .suit-hearts, .suit-diamonds, .suit-spades, .suit-clubs {
             background: linear-gradient(45deg, #FFF8B0, #FFD700, #DAA520);
             -webkit-background-clip: text;
@@ -110,70 +131,40 @@
             filter: drop-shadow(0px 0px 2px rgba(255, 215, 0, 0.8));
         }
 
-        .card-bottom {
-            position: absolute;
-            bottom: 5px;
-            right: 8px;
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            font-size: 1.2rem;
-            transform: rotate(180deg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--gold-solid);
-        }
-
-        .card-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3.5rem;
-            opacity: 0.2;
-        }
-
+        /* Poleđina karte */
         .card-back {
-            background: repeating-linear-gradient(45deg, #000, #000 10px, #111 10px, #111 20px);
-            border: 2px solid var(--gold-dark);
+            background: repeating-linear-gradient(45deg, #000, #000 8px, #111 8px, #111 16px);
+            border: 1px solid var(--gold-dark);
             display: flex;
             justify-content: center;
             align-items: center;
+            box-sizing: border-box;
         }
 
         .card-back-logo {
             font-family: 'Cinzel', serif;
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: var(--gold-solid);
-            opacity: 0.6;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            opacity: 0.5;
         }
 
-        .column {
-            display: flex;
-            flex-direction: column;
-            min-height: 400px;
-            width: 90px; 
-        }
-
-        .card.stacked {
-            margin-top: -90px; 
-        }
-
-        .controls {
+        /* Donji deo (rezervni špilovi) */
+        .bottom-controls {
             margin-top: 20px;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             display: flex;
             gap: 20px;
+            align-items: center;
+            justify-content: center;
         }
 
         button {
             background: transparent;
             color: var(--gold-solid);
             border: 2px solid var(--gold-solid);
-            padding: 12px 30px;
-            font-size: 1rem;
+            padding: 10px 20px;
+            font-size: 0.9rem;
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
             letter-spacing: 1px;
@@ -189,6 +180,37 @@
             color: #000;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
             transform: scale(1.05);
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stock-pile {
+            display: flex;
+            gap: 5px;
+        }
+
+        .stock-card {
+            width: 40px;
+            height: 56px;
+            background: repeating-linear-gradient(45deg, #000, #000 5px, #111 5px, #111 10px);
+            border: 1px solid var(--gold-dark);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--gold-solid);
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        .stock-card:hover {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
         .win-message {
@@ -219,13 +241,13 @@
     <header>
         <img src="logo.jpg" alt="Golden Space Logo" class="company-logo" onerror="this.style.display='none'; document.getElementById('fallback-text').style.display='block';">
         <h1 id="fallback-text" style="display:none; font-family: 'Cinzel', serif; font-size: 2rem; color: var(--gold-solid); margin:0; letter-spacing: 2px;">GOLDEN SPACE</h1>
-        <div class="subtitle">Premium Karte</div>
     </header>
 
     <div id="game-board"></div>
 
-    <div class="controls">
+    <div class="bottom-controls">
         <button onclick="dealNewGame()">Nova Igra</button>
+        <div class="stock-pile" id="stock-pile" onclick="dealFromStock()"></div>
     </div>
 
     <div class="win-message" id="win-message">
@@ -235,17 +257,62 @@
     </div>
 
     <script>
+        // Zvukovi (Web Audio API) - Generišu se direktno u browseru
+        let audioCtx;
+        function playSound(type) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'move') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'deal') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.15);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+            } else if (type === 'win') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2);
+                osc.frequency.setValueAtTime(1200, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+            }
+        }
+
         const suits = ['♠', '♥', '♦', '♣'];
         const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         
         let deck = [];
-        let columns = [[], [], [], [], [], [], [], [], [], []]; 
-        let selectedCard = null;
+        let columns = Array.from({ length: 10 }, () => []);
+        let stock = []; 
+        let completedSets = 0;
+        let selectedCards = []; 
         let selectedColIndex = -1;
-        let selectedCardIndex = -1;
+        let selectedStartIndex = -1;
 
         function createDeck() {
             deck = [];
+            // U pravom Spider pasijansu koriste se 2 špila (104 karte)
             for (let i = 0; i < 2; i++) {
                 suits.forEach(suit => {
                     values.forEach(value => {
@@ -266,18 +333,28 @@
         function dealNewGame() {
             document.getElementById('win-message').style.display = 'none';
             createDeck();
-            columns = [[], [], [], [], [], [], [], [], [], []];
-            
+            columns = Array.from({ length: 10 }, () => []);
+            stock = [];
+            completedSets = 0;
+            selectedCards = [];
+
             let cardIndex = 0;
+            // Deljenje 54 karte u 10 kolona (prve 4 kolone dobijaju 6 karata, ostale 5)
             for (let i = 0; i < 10; i++) {
                 let numCards = i < 4 ? 6 : 5;
                 for (let j = 0; j < numCards; j++) {
-                    if (cardIndex < deck.length) {
-                        columns[i].push(deck[cardIndex]);
-                        cardIndex++;
-                    }
+                    let card = deck[cardIndex++];
+                    // U Spideru, samo poslednja karta u koloni je licem gore
+                    card.faceUp = (j === numCards - 1);
+                    columns[i].push(card);
                 }
             }
+
+            // Ostale karte idu u rezervni špil (stock) - biće podeljene u 5 delova po 10 karata
+            while (cardIndex < deck.length) {
+                stock.push(deck[cardIndex++]);
+            }
+
             renderBoard();
         }
 
@@ -290,100 +367,197 @@
                 colDiv.className = 'column';
                 colDiv.dataset.colIndex = colIndex;
 
+                let topOffset = 0;
+                
                 col.forEach((card, cardIndex) => {
                     const cardDiv = document.createElement('div');
                     cardDiv.className = 'card';
                     
-                    const isFaceDown = cardIndex !== col.length - 1;
+                    // Dinamičko preklapanje
+                    if (cardIndex > 0) {
+                        // Ako je karta licem gore, preklapanje je veće, ako je zaleđena, manje
+                        topOffset += card.faceUp ? 25 : 12; 
+                    }
+                    cardDiv.style.top = topOffset + 'px';
 
-                    if (isFaceDown) {
+                    if (!card.faceUp) {
                         cardDiv.classList.add('card-back');
                         cardDiv.innerHTML = `<div class="card-back-logo">GS</div>`;
-                        cardDiv.onclick = (e) => e.stopPropagation();
                     } else {
-                        if (cardIndex > 0) cardDiv.classList.add('stacked');
-                        
-                        if (selectedCard && selectedColIndex === colIndex && selectedCardIndex === cardIndex) {
-                            cardDiv.style.border = '2px solid var(--gold-light)';
-                            cardDiv.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.8)';
-                        }
-
                         let suitClass = '';
                         if (card.suit === '♥' || card.suit === '♦') suitClass = 'suit-hearts suit-diamonds';
                         else suitClass = 'suit-spades suit-clubs';
 
                         cardDiv.innerHTML = `
-                            <div class="card-content ${suitClass}">
-                                ${card.value}
-                                <span class="card-suit">${card.suit}</span>
+                            <div class="card-top ${suitClass}">
+                                <span>${card.value}</span>
+                                <span class="card-suit-top">${card.suit}</span>
                             </div>
-                            <div class="card-center ${suitClass}">${card.suit}</div>
-                            <div class="card-bottom ${suitClass}">
-                                ${card.value}
-                                <span class="card-suit">${card.suit}</span>
-                            </div>
+                            <div class="card-center-suit ${suitClass}">${card.suit}</div>
                         `;
+
+                        // Provera da li je karta selektovana
+                        if (selectedColIndex === colIndex && cardIndex >= selectedStartIndex) {
+                            cardDiv.classList.add('selected');
+                        }
 
                         cardDiv.onclick = (e) => {
                             e.stopPropagation();
                             handleCardClick(colIndex, cardIndex);
                         };
                     }
+
                     colDiv.appendChild(cardDiv);
                 });
+
                 board.appendChild(colDiv);
             });
+
+            renderStock();
+        }
+
+        function renderStock() {
+            const stockDiv = document.getElementById('stock-pile');
+            stockDiv.innerHTML = '';
+            
+            // Prikazujemo preostale "špilove" (svaki špil je 10 karata)
+            const numPiles = Math.ceil(stock.length / 10);
+            for (let i = 0; i < numPiles; i++) {
+                const pileDiv = document.createElement('div');
+                pileDiv.className = 'stock-card';
+                pileDiv.innerText = 'GS';
+                stockDiv.appendChild(pileDiv);
+            }
         }
 
         function handleCardClick(colIndex, cardIndex) {
             const card = columns[colIndex][cardIndex];
+            if (!card.faceUp) return; // Ne možete kliknuti zaleđenu kartu
 
-            if (selectedCard) {
-                if (selectedColIndex === colIndex && selectedCardIndex === cardIndex) {
-                    selectedCard = null;
-                    selectedColIndex = -1;
-                    selectedCardIndex = -1;
-                    renderBoard();
+            // Ako već imamo selektovane karte
+            if (selectedCards.length > 0) {
+                // Ako kliknemo na istu kartu, poništi selekciju
+                if (selectedColIndex === colIndex && selectedStartIndex === cardIndex) {
+                    clearSelection();
                     return;
                 }
 
+                // Pokušaj premeštanja na drugu kolonu
                 if (selectedColIndex !== colIndex) {
                     const targetCol = columns[colIndex];
                     const targetCard = targetCol.length > 0 ? targetCol[targetCol.length - 1] : null;
                     
-                    if (targetCard && targetCard.value === getNextValue(selectedCard.value)) {
-                        const cardsToMove = columns[selectedColIndex].splice(selectedCardIndex);
+                    if (isValidMove(selectedCards, targetCard)) {
+                        // Premeštanje
+                        const cardsToMove = columns[selectedColIndex].splice(selectedStartIndex);
                         columns[colIndex].push(...cardsToMove);
-                        selectedCard = null; selectedColIndex = -1; selectedCardIndex = -1;
+                        
+                        // Okreni novu gornju kartu u izvornoj koloni
+                        if (columns[selectedColIndex].length > 0) {
+                            columns[selectedColIndex][columns[selectedColIndex].length - 1].faceUp = true;
+                        }
+
+                        playSound('move');
+                        clearSelection();
+                        checkForCompletedSet(colIndex); // Proveri da li je napravljen niz K-A
                         renderBoard();
                         checkWin();
-                    } else if (!targetCard) {
-                        const cardsToMove = columns[selectedColIndex].splice(selectedCardIndex);
-                        columns[colIndex].push(...cardsToMove);
-                        selectedCard = null; selectedColIndex = -1; selectedCardIndex = -1;
-                        renderBoard();
-                        checkWin();
+                    } else {
+                        playSound('error');
                     }
                 }
             } else {
-                if (cardIndex === columns[colIndex].length - 1) {
-                    selectedCard = card;
+                // Selektuj karte (samo ako su u opadajućem nizu iste boje)
+                const sequence = columns[colIndex].slice(cardIndex);
+                if (isValidSequence(sequence)) {
+                    selectedCards = sequence;
                     selectedColIndex = colIndex;
-                    selectedCardIndex = cardIndex;
+                    selectedStartIndex = cardIndex;
                     renderBoard();
+                } else {
+                    playSound('error');
                 }
             }
         }
 
-        function getNextValue(val) {
-            const index = values.indexOf(val);
-            if (index === -1 || index === values.length - 1) return null;
-            return values[index + 1];
+        function isValidSequence(sequence) {
+            // Proverava da li su karte u opadajućem nizu (npr. 7, 6, 5) i iste boje
+            for (let i = 0; i < sequence.length - 1; i++) {
+                if (sequence[i].suit !== sequence[i+1].suit) return false;
+                if (values.indexOf(sequence[i].value) !== values.indexOf(sequence[i+1].value) + 1) return false;
+            }
+            return true;
+        }
+
+        function isValidMove(cardsToMove, targetCard) {
+            if (!targetCard) return true; // Prazna kolona prima sve
+            // Može se staviti samo na kartu koja je za jedan viša (npr. 7 na 8)
+            const topCard = cardsToMove[0];
+            return values.indexOf(topCard.value) === values.indexOf(targetCard.value) - 1;
+        }
+
+        function clearSelection() {
+            selectedCards = [];
+            selectedColIndex = -1;
+            selectedStartIndex = -1;
+            renderBoard();
+        }
+
+        function dealFromStock() {
+            if (stock.length === 0) return;
+
+            // U Spideru, ne možete podeliti nove karte ako imate praznu kolonu
+            if (columns.some(col => col.length === 0)) {
+                playSound('error');
+                return; // Pravilo: prvo popunite prazna mesta
+            }
+
+            playSound('deal');
+            // Delimo po jednu kartu u svaku kolonu (ukupno 10)
+            for (let i = 0; i < 10; i++) {
+                if (stock.length > 0) {
+                    let card = stock.pop();
+                    card.faceUp = true; // Karte iz špila se dele licem gore
+                    columns[i].push(card);
+                }
+            }
+            renderBoard();
+            checkForCompletedSet(0); // Proveri sve kolone
+            checkWin();
+        }
+
+        function checkForCompletedSet(colIndex) {
+            // Proveravamo da li na dnu neke kolone imamo niz K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2, A iste boje
+            let foundSet = true;
+            while(foundSet) {
+                foundSet = false;
+                for (let c = 0; c < 10; c++) {
+                    let col = columns[c];
+                    if (col.length >= 13) {
+                        let last13 = col.slice(-13);
+                        if (isValidSequence(last13) && last13[0].value === 'K' && last13[12].value === 'A') {
+                            // Našli smo kompletan niz!
+                            col.splice(-13); // Ukloni 13 karata
+                            completedSets++;
+                            foundSet = true;
+                            
+                            // Okreni novu gornju kartu
+                            if (col.length > 0) {
+                                col[col.length - 1].faceUp = true;
+                            }
+                            
+                            playSound('win'); // Zvučni efekat za osvojen niz
+                            break; // Prekini trenutni for loop, while će ponovo proveriti
+                        }
+                    }
+                }
+            }
+            renderBoard();
         }
 
         function checkWin() {
-            let totalCards = columns.reduce((sum, col) => sum + col.length, 0);
-            if (totalCards === 0) {
+            if (completedSets === 8) { // Potrebno je 8 kompletnih nizova za pobedu (2 špila)
+                playSound('win');
                 document.getElementById('win-message').style.display = 'block';
             }
         }
