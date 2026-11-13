@@ -1,221 +1,394 @@
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap');
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Space DOO - Premium Karte</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap');
 
-    :root {
-        /* PRAVO, JAKO ZLATO */
-        --gold-solid: #FFD700; 
-        --gold-light: #FFF8B0;
-        --gold-dark: #DAA520;
+        :root {
+            --gold-solid: #FFD700; 
+            --gold-light: #FFF8B0;
+            --gold-dark: #DAA520;
+            --bg-dark: #000000;
+            --card-black: #0A0A0A;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            background-image: none; 
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .company-logo {
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 10px;
+            filter: drop-shadow(0px 4px 10px rgba(255, 215, 0, 0.4));
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold-solid);
+            margin-top: 5px;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        #game-board {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 20px;
+            max-width: 1200px;
+        }
+
+        .card {
+            width: 80px;
+            height: 120px;
+            background-color: var(--card-black);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.9), inset 0 0 10px rgba(255, 215, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,1), 0 0 20px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.3);
+            border-color: var(--gold-solid);
+        }
+
+        .card-content {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--gold-solid);
+        }
+
+        .card-suit {
+            font-size: 1.3rem;
+            margin-top: 2px;
+        }
+
+        .suit-hearts, .suit-diamonds, .suit-spades, .suit-clubs {
+            background: linear-gradient(45deg, #FFF8B0, #FFD700, #DAA520);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0px 0px 2px rgba(255, 215, 0, 0.8));
+        }
+
+        .card-bottom {
+            position: absolute;
+            bottom: 5px;
+            right: 8px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transform: rotate(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--gold-solid);
+        }
+
+        .card-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.5rem;
+            opacity: 0.2;
+        }
+
+        .card-back {
+            background: repeating-linear-gradient(45deg, #000, #000 10px, #111 10px, #111 20px);
+            border: 2px solid var(--gold-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-back-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--gold-solid);
+            opacity: 0.6;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+            width: 90px; 
+        }
+
+        .card.stacked {
+            margin-top: -90px; 
+        }
+
+        .controls {
+            margin-top: 20px;
+            margin-bottom: 50px;
+            display: flex;
+            gap: 20px;
+        }
+
+        button {
+            background: transparent;
+            color: var(--gold-solid);
+            border: 2px solid var(--gold-solid);
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        button:hover {
+            background: var(--gold-solid);
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        .win-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            border: 2px solid var(--gold-solid);
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
+            z-index: 100;
+        }
+
+        .win-message h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            margin-top: 0;
+            color: var(--gold-solid);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logo.jpg" alt="Golden Space Logo" class="company-logo" onerror="this.style.display='none'; document.getElementById('fallback-text').style.display='block';">
+        <h1 id="fallback-text" style="display:none; font-family: 'Cinzel', serif; font-size: 2rem; color: var(--gold-solid); margin:0; letter-spacing: 2px;">GOLDEN SPACE</h1>
+        <div class="subtitle">Premium Karte</div>
+    </header>
+
+    <div id="game-board"></div>
+
+    <div class="controls">
+        <button onclick="dealNewGame()">Nova Igra</button>
+    </div>
+
+    <div class="win-message" id="win-message">
+        <h2>Čestitamo!</h2>
+        <p>Uspešno ste rešili Golden Space pasijans!</p>
+        <button onclick="dealNewGame()" style="margin-top: 20px;">Igraj Ponovo</button>
+    </div>
+
+    <script>
+        const suits = ['♠', '♥', '♦', '♣'];
+        const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         
-        /* ČISTA CRNA POZADINA */
-        --bg-dark: #000000;
-        --card-black: #0A0A0A;
-    }
+        let deck = [];
+        let columns = [[], [], [], [], [], [], [], [], [], []]; 
+        let selectedCard = null;
+        let selectedColIndex = -1;
+        let selectedCardIndex = -1;
 
-    body {
-        margin: 0;
-        padding: 0;
-        background-color: var(--bg-dark);
-        background-image: none; /* Uklonjen braon preliv */
-        font-family: 'Montserrat', sans-serif;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-        overflow-x: hidden;
-    }
+        function createDeck() {
+            deck = [];
+            for (let i = 0; i < 2; i++) {
+                suits.forEach(suit => {
+                    values.forEach(value => {
+                        deck.push({ suit, value });
+                    });
+                });
+            }
+            shuffle(deck);
+        }
 
-    header {
-        text-align: center;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
-    .company-logo {
-        max-width: 250px;
-        height: auto;
-        margin-bottom: 10px;
-        filter: drop-shadow(0px 4px 10px rgba(255, 215, 0, 0.4)); /* Zlatni sjaj oko logotipa */
-    }
+        function dealNewGame() {
+            document.getElementById('win-message').style.display = 'none';
+            createDeck();
+            columns = [[], [], [], [], [], [], [], [], [], []];
+            
+            let cardIndex = 0;
+            for (let i = 0; i < 10; i++) {
+                let numCards = i < 4 ? 6 : 5;
+                for (let j = 0; j < numCards; j++) {
+                    if (cardIndex < deck.length) {
+                        columns[i].push(deck[cardIndex]);
+                        cardIndex++;
+                    }
+                }
+            }
+            renderBoard();
+        }
 
-    .subtitle {
-        font-size: 0.8rem;
-        letter-spacing: 5px;
-        text-transform: uppercase;
-        color: var(--gold-solid);
-        margin-top: 5px;
-        font-weight: 600;
-        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-    }
+        function renderBoard() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = '';
 
-    #game-board {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        justify-content: center;
-        padding: 20px;
-        max-width: 1200px;
-    }
+            columns.forEach((col, colIndex) => {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'column';
+                colDiv.dataset.colIndex = colIndex;
 
-    /* Karte - čisto crne sa zlatnim ivicama */
-    .card {
-        width: 80px;
-        height: 120px;
-        background-color: var(--card-black);
-        border: 1px solid rgba(255, 215, 0, 0.4);
-        border-radius: 8px;
-        position: relative;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.9), inset 0 0 10px rgba(255, 215, 0, 0.1);
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        user-select: none;
-        overflow: hidden;
-    }
+                col.forEach((card, cardIndex) => {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'card';
+                    
+                    const isFaceDown = cardIndex !== col.length - 1;
 
-    /* Sjajni zlatni okvir na hover */
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0,0,0,1), 0 0 20px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.3);
-        border-color: var(--gold-solid);
-    }
+                    if (isFaceDown) {
+                        cardDiv.classList.add('card-back');
+                        cardDiv.innerHTML = `<div class="card-back-logo">GS</div>`;
+                        cardDiv.onclick = (e) => e.stopPropagation();
+                    } else {
+                        if (cardIndex > 0) cardDiv.classList.add('stacked');
+                        
+                        if (selectedCard && selectedColIndex === colIndex && selectedCardIndex === cardIndex) {
+                            cardDiv.style.border = '2px solid var(--gold-light)';
+                            cardDiv.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.8)';
+                        }
 
-    .card-content {
-        position: absolute;
-        top: 5px;
-        left: 8px;
-        font-family: 'Cinzel', serif;
-        font-weight: bold;
-        font-size: 1.2rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: var(--gold-solid);
-    }
+                        let suitClass = '';
+                        if (card.suit === '♥' || card.suit === '♦') suitClass = 'suit-hearts suit-diamonds';
+                        else suitClass = 'suit-spades suit-clubs';
 
-    .card-suit {
-        font-size: 1.3rem;
-        margin-top: 2px;
-    }
+                        cardDiv.innerHTML = `
+                            <div class="card-content ${suitClass}">
+                                ${card.value}
+                                <span class="card-suit">${card.suit}</span>
+                            </div>
+                            <div class="card-center ${suitClass}">${card.suit}</div>
+                            <div class="card-bottom ${suitClass}">
+                                ${card.value}
+                                <span class="card-suit">${card.suit}</span>
+                            </div>
+                        `;
 
-    /* Simboli u jakoj zlatnoj boji */
-    .suit-hearts, .suit-diamonds, .suit-spades, .suit-clubs {
-        background: linear-gradient(45deg, #FFF8B0, #FFD700, #DAA520);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        filter: drop-shadow(0px 0px 2px rgba(255, 215, 0, 0.8));
-    }
+                        cardDiv.onclick = (e) => {
+                            e.stopPropagation();
+                            handleCardClick(colIndex, cardIndex);
+                        };
+                    }
+                    colDiv.appendChild(cardDiv);
+                });
+                board.appendChild(colDiv);
+            });
+        }
 
-    .card-bottom {
-        position: absolute;
-        bottom: 5px;
-        right: 8px;
-        font-family: 'Cinzel', serif;
-        font-weight: bold;
-        font-size: 1.2rem;
-        transform: rotate(180deg);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: var(--gold-solid);
-    }
+        function handleCardClick(colIndex, cardIndex) {
+            const card = columns[colIndex][cardIndex];
 
-    .card-center {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 3.5rem;
-        opacity: 0.2;
-    }
+            if (selectedCard) {
+                if (selectedColIndex === colIndex && selectedCardIndex === cardIndex) {
+                    selectedCard = null;
+                    selectedColIndex = -1;
+                    selectedCardIndex = -1;
+                    renderBoard();
+                    return;
+                }
 
-    .card-back {
-        background: repeating-linear-gradient(
-            45deg,
-            #000,
-            #000 10px,
-            #111 10px,
-            #111 20px
-        );
-        border: 2px solid var(--gold-dark);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+                if (selectedColIndex !== colIndex) {
+                    const targetCol = columns[colIndex];
+                    const targetCard = targetCol.length > 0 ? targetCol[targetCol.length - 1] : null;
+                    
+                    if (targetCard && targetCard.value === getNextValue(selectedCard.value)) {
+                        const cardsToMove = columns[selectedColIndex].splice(selectedCardIndex);
+                        columns[colIndex].push(...cardsToMove);
+                        selectedCard = null; selectedColIndex = -1; selectedCardIndex = -1;
+                        renderBoard();
+                        checkWin();
+                    } else if (!targetCard) {
+                        const cardsToMove = columns[selectedColIndex].splice(selectedCardIndex);
+                        columns[colIndex].push(...cardsToMove);
+                        selectedCard = null; selectedColIndex = -1; selectedCardIndex = -1;
+                        renderBoard();
+                        checkWin();
+                    }
+                }
+            } else {
+                if (cardIndex === columns[colIndex].length - 1) {
+                    selectedCard = card;
+                    selectedColIndex = colIndex;
+                    selectedCardIndex = cardIndex;
+                    renderBoard();
+                }
+            }
+        }
 
-    .card-back-logo {
-        font-family: 'Cinzel', serif;
-        font-size: 2rem;
-        font-weight: bold;
-        color: var(--gold-solid);
-        opacity: 0.6;
-        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-    }
+        function getNextValue(val) {
+            const index = values.indexOf(val);
+            if (index === -1 || index === values.length - 1) return null;
+            return values[index + 1];
+        }
 
-    .column {
-        display: flex;
-        flex-direction: column;
-        min-height: 400px;
-        width: 90px; 
-    }
+        function checkWin() {
+            let totalCards = columns.reduce((sum, col) => sum + col.length, 0);
+            if (totalCards === 0) {
+                document.getElementById('win-message').style.display = 'block';
+            }
+        }
 
-    .card.stacked {
-        margin-top: -90px; 
-    }
-
-    .controls {
-        margin-top: 20px;
-        margin-bottom: 50px;
-        display: flex;
-        gap: 20px;
-    }
-
-    button {
-        background: transparent;
-        color: var(--gold-solid);
-        border: 2px solid var(--gold-solid);
-        padding: 12px 30px;
-        font-size: 1rem;
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
-        letter-spacing: 1px;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-    }
-
-    button:hover {
-        background: var(--gold-solid);
-        color: #000;
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-        transform: scale(1.05);
-    }
-
-    .win-message {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(0, 0, 0, 0.95);
-        padding: 40px;
-        border: 2px solid var(--gold-solid);
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
-        z-index: 100;
-    }
-
-    .win-message h2 {
-        font-family: 'Cinzel', serif;
-        font-size: 2rem;
-        margin-top: 0;
-        color: var(--gold-solid);
-    }
-</style>
+        dealNewGame();
+    </script>
+</body>
+</html>
