@@ -1,432 +1,221 @@
-<!DOCTYPE html>
-<html lang="sr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Space DOO - Premium Igra</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap');
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap');
 
-        :root {
-            /* Boje inspirisane tvojim logom sa slike */
-            --gold-solid: #C6A87C; 
-            --gold-light: #E8D5B5;
-            --gold-dark: #9B7C54;
-            --bg-dark: #2A2826; /* Tamno sivo-braon pozadina sa slike */
-            --card-black: #1A1A1A;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 50% 0%, #383532 0%, #1A1918 80%);
-            font-family: 'Montserrat', sans-serif;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        header {
-            text-align: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Stil za tvoj logo na vrhu */
-        .company-logo {
-            max-width: 250px;
-            height: auto;
-            margin-bottom: 10px;
-            filter: drop-shadow(0px 4px 10px rgba(198, 168, 124, 0.15));
-        }
-
-        .subtitle {
-            font-size: 0.8rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: var(--gold-solid);
-            margin-top: 5px;
-            font-weight: 600;
-        }
-
-        #game-board {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            padding: 20px;
-            max-width: 1200px;
-        }
-
-        /* Stilovi za karte */
-        .card {
-            width: 80px;
-            height: 120px;
-            background-color: var(--card-black);
-            border: 1px solid rgba(198, 168, 124, 0.3);
-            border-radius: 8px;
-            position: relative;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.8), inset 0 0 15px rgba(198, 168, 124, 0.05);
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            user-select: none;
-            overflow: hidden;
-        }
-
-        /* Sjajni zlatni okvir na hover */
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.9), 0 0 15px rgba(198, 168, 124, 0.4), inset 0 0 20px rgba(198, 168, 124, 0.2);
-            border-color: var(--gold-solid);
-        }
-
-        /* Sadržaj karte */
-        .card-content {
-            position: absolute;
-            top: 5px;
-            left: 8px;
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            font-size: 1.2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--gold-solid);
-        }
-
-        .card-suit {
-            font-size: 1.3rem;
-            margin-top: 2px;
-        }
-
-        /* Zlatni gradijent za sve boje */
-        .suit-hearts, .suit-diamonds, .suit-spades, .suit-clubs {
-            background: linear-gradient(45deg, var(--gold-light), var(--gold-solid), var(--gold-dark));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        /* Donji desni ugao karte */
-        .card-bottom {
-            position: absolute;
-            bottom: 5px;
-            right: 8px;
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            font-size: 1.2rem;
-            transform: rotate(180deg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--gold-solid);
-        }
-
-        /* Centar karte - Veliki simbol */
-        .card-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3.5rem;
-            opacity: 0.15; /* Suptilno u pozadini */
-        }
-
-        /* Pozadina karte (kada je zaleđena) */
-        .card-back {
-            background: repeating-linear-gradient(
-                45deg,
-                var(--card-black),
-                var(--card-black) 10px,
-                #222 10px,
-                #222 20px
-            );
-            border: 2px solid var(--gold-dark);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Logo na poleđini karte */
-        .card-back-logo {
-            font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--gold-solid);
-            opacity: 0.4;
-            text-shadow: 0 0 10px rgba(198, 168, 124, 0.3);
-        }
-
-        .column {
-            display: flex;
-            flex-direction: column;
-            min-height: 400px;
-            width: 90px; 
-        }
-
-        .card.stacked {
-            margin-top: -90px; 
-        }
-
-        .controls {
-            margin-top: 20px;
-            margin-bottom: 50px;
-            display: flex;
-            gap: 20px;
-        }
-
-        button {
-            background: transparent;
-            color: var(--gold-solid);
-            border: 2px solid var(--gold-solid);
-            padding: 12px 30px;
-            font-size: 1rem;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            letter-spacing: 1px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-
-        button:hover {
-            background: var(--gold-solid);
-            color: #111;
-            box-shadow: 0 0 15px rgba(198, 168, 124, 0.5);
-            transform: scale(1.05);
-        }
-
-        .win-message {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(20, 20, 20, 0.95);
-            padding: 40px;
-            border: 2px solid var(--gold-solid);
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 0 50px rgba(198, 168, 124, 0.2);
-            z-index: 100;
-        }
-
-        .win-message h2 {
-            font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            margin-top: 0;
-            color: var(--gold-solid);
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <!-- OVDE SE UBAČUJE TVOJ LOGO -->
-        <!-- Sačuvaj sliku kao 'logo.png' u istom folderu gde je i ovaj HTML fajl -->
-        <img src="logo.png" alt="Golden Space Logo" class="company-logo" onerror="this.style.display='none'; document.getElementById('fallback-text').style.display='block';">
+    :root {
+        /* PRAVO, JAKO ZLATO */
+        --gold-solid: #FFD700; 
+        --gold-light: #FFF8B0;
+        --gold-dark: #DAA520;
         
-        <!-- Ako se slika ne učita, prikazaće se ovaj tekst -->
-        <h1 id="fallback-text" style="display:none; font-family: 'Cinzel', serif; font-size: 2rem; color: var(--gold-solid); margin:0; letter-spacing: 2px;">GOLDEN SPACE</h1>
-        
-        <div class="subtitle">Premium Karte</div>
-    </header>
+        /* ČISTA CRNA POZADINA */
+        --bg-dark: #000000;
+        --card-black: #0A0A0A;
+    }
 
-    <div id="game-board">
-        <!-- Kolone se generišu JavaScriptom -->
-    </div>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg-dark);
+        background-image: none; /* Uklonjen braon preliv */
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
 
-    <div class="controls">
-        <button onclick="dealNewGame()">Nova Igra</button>
-    </div>
+    header {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-    <div class="win-message" id="win-message">
-        <h2>Čestitamo!</h2>
-        <p>Uspešno ste rešili Golden Space pasijans!</p>
-        <button onclick="dealNewGame()" style="margin-top: 20px;">Igraj Ponovo</button>
-    </div>
+    .company-logo {
+        max-width: 250px;
+        height: auto;
+        margin-bottom: 10px;
+        filter: drop-shadow(0px 4px 10px rgba(255, 215, 0, 0.4)); /* Zlatni sjaj oko logotipa */
+    }
 
-    <script>
-        const suits = ['♠', '♥', '♦', '♣'];
-        const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-        
-        let deck = [];
-        let columns = [[], [], [], [], [], [], [], [], [], []]; 
-        let selectedCard = null;
-        let selectedColIndex = -1;
-        let selectedCardIndex = -1;
+    .subtitle {
+        font-size: 0.8rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--gold-solid);
+        margin-top: 5px;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
 
-        function createDeck() {
-            deck = [];
-            for (let i = 0; i < 2; i++) {
-                suits.forEach(suit => {
-                    values.forEach(value => {
-                        deck.push({ suit, value });
-                    });
-                });
-            }
-            shuffle(deck);
-        }
+    #game-board {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        padding: 20px;
+        max-width: 1200px;
+    }
 
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
+    /* Karte - čisto crne sa zlatnim ivicama */
+    .card {
+        width: 80px;
+        height: 120px;
+        background-color: var(--card-black);
+        border: 1px solid rgba(255, 215, 0, 0.4);
+        border-radius: 8px;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.9), inset 0 0 10px rgba(255, 215, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        user-select: none;
+        overflow: hidden;
+    }
 
-        function dealNewGame() {
-            document.getElementById('win-message').style.display = 'none';
-            createDeck();
-            columns = [[], [], [], [], [], [], [], [], [], []];
-            
-            let cardIndex = 0;
-            for (let i = 0; i < 10; i++) {
-                let numCards = i < 4 ? 6 : 5;
-                for (let j = 0; j < numCards; j++) {
-                    if (cardIndex < deck.length) {
-                        columns[i].push(deck[cardIndex]);
-                        cardIndex++;
-                    }
-                }
-            }
-            renderBoard();
-        }
+    /* Sjajni zlatni okvir na hover */
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,1), 0 0 20px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.3);
+        border-color: var(--gold-solid);
+    }
 
-        function renderBoard() {
-            const board = document.getElementById('game-board');
-            board.innerHTML = '';
+    .card-content {
+        position: absolute;
+        top: 5px;
+        left: 8px;
+        font-family: 'Cinzel', serif;
+        font-weight: bold;
+        font-size: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--gold-solid);
+    }
 
-            columns.forEach((col, colIndex) => {
-                const colDiv = document.createElement('div');
-                colDiv.className = 'column';
-                colDiv.dataset.colIndex = colIndex;
+    .card-suit {
+        font-size: 1.3rem;
+        margin-top: 2px;
+    }
 
-                col.forEach((card, cardIndex) => {
-                    const cardDiv = document.createElement('div');
-                    cardDiv.className = 'card';
-                    
-                    // Da li je karta licem nadole? (Sve osim poslednje karte u koloni su zaleđene)
-                    const isFaceDown = cardIndex !== col.length - 1;
+    /* Simboli u jakoj zlatnoj boji */
+    .suit-hearts, .suit-diamonds, .suit-spades, .suit-clubs {
+        background: linear-gradient(45deg, #FFF8B0, #FFD700, #DAA520);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        filter: drop-shadow(0px 0px 2px rgba(255, 215, 0, 0.8));
+    }
 
-                    if (isFaceDown) {
-                        cardDiv.classList.add('card-back');
-                        cardDiv.innerHTML = `<div class="card-back-logo">GS</div>`;
-                        // Klik na zaleđenu kartu ne radi ništa
-                        cardDiv.onclick = (e) => e.stopPropagation();
-                    } else {
-                        if (cardIndex > 0) cardDiv.classList.add('stacked');
-                        
-                        if (selectedCard && selectedColIndex === colIndex && selectedCardIndex === cardIndex) {
-                            cardDiv.style.border = '2px solid var(--gold-light)';
-                            cardDiv.style.boxShadow = '0 0 20px rgba(198, 168, 124, 0.8)';
-                        }
+    .card-bottom {
+        position: absolute;
+        bottom: 5px;
+        right: 8px;
+        font-family: 'Cinzel', serif;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transform: rotate(180deg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--gold-solid);
+    }
 
-                        let suitClass = '';
-                        if (card.suit === '♥' || card.suit === '♦') suitClass = 'suit-hearts suit-diamonds';
-                        else suitClass = 'suit-spades suit-clubs';
+    .card-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 3.5rem;
+        opacity: 0.2;
+    }
 
-                        cardDiv.innerHTML = `
-                            <div class="card-content ${suitClass}">
-                                ${card.value}
-                                <span class="card-suit">${card.suit}</span>
-                            </div>
-                            <div class="card-center ${suitClass}">${card.suit}</div>
-                            <div class="card-bottom ${suitClass}">
-                                ${card.value}
-                                <span class="card-suit">${card.suit}</span>
-                            </div>
-                        `;
+    .card-back {
+        background: repeating-linear-gradient(
+            45deg,
+            #000,
+            #000 10px,
+            #111 10px,
+            #111 20px
+        );
+        border: 2px solid var(--gold-dark);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-                        cardDiv.onclick = (e) => {
-                            e.stopPropagation();
-                            handleCardClick(colIndex, cardIndex);
-                        };
-                    }
+    .card-back-logo {
+        font-family: 'Cinzel', serif;
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--gold-solid);
+        opacity: 0.6;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    }
 
-                    colDiv.appendChild(cardDiv);
-                });
+    .column {
+        display: flex;
+        flex-direction: column;
+        min-height: 400px;
+        width: 90px; 
+    }
 
-                board.appendChild(colDiv);
-            });
-        }
+    .card.stacked {
+        margin-top: -90px; 
+    }
 
-        function handleCardClick(colIndex, cardIndex) {
-            const card = columns[colIndex][cardIndex];
+    .controls {
+        margin-top: 20px;
+        margin-bottom: 50px;
+        display: flex;
+        gap: 20px;
+    }
 
-            if (selectedCard) {
-                if (selectedColIndex === colIndex && selectedCardIndex === cardIndex) {
-                    selectedCard = null;
-                    selectedColIndex = -1;
-                    selectedCardIndex = -1;
-                    renderBoard();
-                    return;
-                }
+    button {
+        background: transparent;
+        color: var(--gold-solid);
+        border: 2px solid var(--gold-solid);
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    }
 
-                if (selectedColIndex !== colIndex) {
-                    const targetCol = columns[colIndex];
-                    const targetCard = targetCol.length > 0 ? targetCol[targetCol.length - 1] : null;
-                    
-                    if (targetCard && targetCard.value === getNextValue(selectedCard.value)) {
-                        const cardsToMove = columns[selectedColIndex].splice(selectedCardIndex);
-                        columns[colIndex].push(...cardsToMove);
-                        
-                        selectedCard = null;
-                        selectedColIndex = -1;
-                        selectedCardIndex = -1;
-                        renderBoard();
-                        checkWin();
-                    } else if (!targetCard) {
-                        const cardsToMove = columns[selectedColIndex].splice(selectedCardIndex);
-                        columns[colIndex].push(...cardsToMove);
+    button:hover {
+        background: var(--gold-solid);
+        color: #000;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        transform: scale(1.05);
+    }
 
-                        selectedCard = null;
-                        selectedColIndex = -1;
-                        selectedCardIndex = -1;
-                        renderBoard();
-                        checkWin();
-                    } else {
-                        // Nevalidan potez - kratka crvena animacija
-                        const targetDiv = document.querySelector(`.column[data-col-index="${colIndex}"] .card:last-child`);
-                        if(targetDiv) {
-                            targetDiv.style.borderColor = 'red';
-                            setTimeout(() => targetDiv.style.borderColor = 'rgba(198, 168, 124, 0.3)', 300);
-                        }
-                    }
-                }
-            } else {
-                // Selektuj samo ako je karta licem gore (poslednja u koloni)
-                if (cardIndex === columns[colIndex].length - 1) {
-                    selectedCard = card;
-                    selectedColIndex = colIndex;
-                    selectedCardIndex = cardIndex;
-                    renderBoard();
-                }
-            }
-        }
+    .win-message {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.95);
+        padding: 40px;
+        border: 2px solid var(--gold-solid);
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
+        z-index: 100;
+    }
 
-        function getNextValue(val) {
-            const index = values.indexOf(val);
-            if (index === -1 || index === values.length - 1) return null;
-            return values[index + 1];
-        }
-
-        function checkWin() {
-            let totalCards = columns.reduce((sum, col) => sum + col.length, 0);
-            if (totalCards === 0) {
-                document.getElementById('win-message').style.display = 'block';
-            }
-        }
-
-        dealNewGame();
-    </script>
-</body>
-</html>
+    .win-message h2 {
+        font-family: 'Cinzel', serif;
+        font-size: 2rem;
+        margin-top: 0;
+        color: var(--gold-solid);
+    }
+</style>
